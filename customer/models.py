@@ -17,6 +17,7 @@ class Customer(models.Model):
     address = models.CharField(max_length=150)
     joined = models.DateTimeField(default=datetime.now())
     image = models.ImageField(upload_to='customer/', null=True, blank=True)
+    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email
@@ -28,8 +29,8 @@ class Customer(models.Model):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    # email = models.EmailField(unique=True)
-    phone_number = models.IntegerField(unique=True)
+    email = models.EmailField(unique=True)
+    # phone_number = models.IntegerField(unique=True)
     username = models.CharField(max_length=255, null=True, blank=True)
     birth_of_date = models.DateField(null=True, blank=True)
 
@@ -38,13 +39,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=True)
 
     objects = CustomUserManager()
-    # USERNAME_FIELD = 'email'
-    USERNAME_FIELD = 'phone_number'
+    USERNAME_FIELD = 'email'
+    # USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        # return self.email
-        return self.phone_number
+        return self.email
+        # return self.phone_number
 
 
 
