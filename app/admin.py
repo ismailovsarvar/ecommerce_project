@@ -6,14 +6,20 @@ from app.models import Product, Image, Attribute, AttributeValue, ProductAttribu
 
 
 # admin.site.register(Product)
-admin.site.register(Image)
+# admin.site.register(Image)
 admin.site.register(Attribute)
 admin.site.register(AttributeValue)
 admin.site.register(ProductAttribute)
 
 
+@admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ('name', 'discount', 'price')
+    list_display = ['id', 'name', 'price', 'rating', 'quantity']
+    search_fields = ['name', 'price', 'quantity']
+    list_filter = ['price', 'rating', 'quantity']
 
 
-admin.site.register(Product, ProductModelAdmin)
+@admin.register(Image)
+class ImagesModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'image', 'product']
+    search_fields = ['product']
