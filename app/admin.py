@@ -1,4 +1,5 @@
 from django.contrib import admin
+from import_export import resources
 
 from app.models import Product, Image, Attribute, AttributeValue, ProductAttribute
 
@@ -23,3 +24,8 @@ class ProductModelAdmin(admin.ModelAdmin):
 class ImagesModelAdmin(admin.ModelAdmin):
     list_display = ['id', 'image', 'product']
     search_fields = ['product']
+
+
+class ProductResource(resources.ModelResource):
+    class Meta:
+        model = Product

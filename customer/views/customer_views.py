@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from customer.forms import CustomerModelForm
@@ -9,13 +10,29 @@ from customer.models import Customer
 
 
 def customers(request):
+    page = request.GET.get('page',)
+    customer_list = Customer.objects.all()
+    paginator = Paginator(customer_list, 3)
+    try:
+        page_number = int(page)
+    except (ValueError, TypeError):
+        page_number = 1
+
+    try:
+        customer_page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        customer_page_obj = paginator.page(1)
+    except EmptyPage:
+        customer_page_obj = paginator.page(paginator.num_pages)
+
     search_query = request.GET.get('search')
     if search_query:
         customer_list = Customer.objects.filter(
             Q(full_name__icontains=search_query) | Q(address__icontains=search_query))
-    else:
-        customer_list = Customer.objects.all()
+    # else:
+    #     customer_list = Customer.objects.all()
     context = {
+        'customer_page_obj': customer_page_obj,
         'customer_list': customer_list,
     }
     return render(request, 'customer/customer-list.html', context)

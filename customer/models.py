@@ -3,6 +3,7 @@ from datetime import datetime
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from django.contrib.auth.hashers import make_password
 
 from customer.managers import CustomUserManager
 
@@ -47,5 +48,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
         # return self.phone_number
 
+    def save(self, *args, **kwargs):
+        if self.password and not self.password.startswith(('pbkdf2_sha256$', 'bcrypt$', 'argon2')):
+            self.password = make_password(self.password)
 
-
+        super().save(*args, **kwargs)

@@ -17,3 +17,5 @@ class ProductModelForm(forms.ModelForm):
         model = Product
         # fields = ['name', 'description', 'price', 'rating', 'discount', 'quantity']
         exclude = ()
+
+
