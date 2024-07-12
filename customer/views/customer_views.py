@@ -1,7 +1,14 @@
+import csv
+import json
+
+import openpyxl
+from io import BytesIO
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, redirect
 from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+
 from customer.forms import CustomerModelForm
 from customer.models import Customer
 
@@ -10,7 +17,7 @@ from customer.models import Customer
 
 
 def customers(request):
-    page = request.GET.get('page',)
+    page = request.GET.get('page', )
     customer_list = Customer.objects.all()
     paginator = Paginator(customer_list, 3)
     try:
@@ -78,3 +85,41 @@ def edit_customer(request, pk):
         'form': form,
     }
     return render(request, 'customer/update-customer.html', context)
+
+
+def export_data(request):
+    format = request.GET.get('format', 'csv')
+    if format == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="customers.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'Full Name', 'Email', 'Phone Number', 'Address'])
+        for customer in Customer.objects.all():
+            writer.writerow([customer.id, customer.full_name, customer.email, customer.phone_number, customer.address])
+
+    elif format == 'json':
+        response = HttpResponse(content_type='application/json')
+        data = list(Customer.objects.all().values('full_name', 'email', 'phone_number', 'address'))
+        response.write(json.dumps(data, indent=4))
+        response['Content-Disposition'] = 'attachment; filename=customers.json'
+
+    elif format == 'xlsx':
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="customers.xlsx"'
+        workbook = openpyxl.Workbook()
+        sheet = workbook.active
+        sheet.append(['ID', 'Full Name', 'Email', 'Phone Number', 'Address'])
+
+        for customer in Customer.objects.all():
+            sheet.append([customer.id, customer.full_name, customer.email, customer.phone_number, customer.address])
+
+        stream = BytesIO()
+        workbook.save(stream)
+        stream.seek(0)
+        response.write(stream.read())
+
+    else:
+        response = HttpResponse(status=404)
+        response.content = 'Bad request'
+
+    return response

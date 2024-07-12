@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-from django.contrib.auth.hashers import make_password
 
 from customer.managers import CustomUserManager
 
@@ -19,12 +19,13 @@ class Customer(models.Model):
     joined = models.DateTimeField(default=datetime.now())
     image = models.ImageField(upload_to='customer/', null=True, blank=True)
     is_active = models.BooleanField(default=False)
+    order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 
     def __str__(self):
         return self.email
 
     class Meta:
-        ordering = ('-joined',)
+        ordering = ('-joined', 'order')
         verbose_name_plural = 'Customers'
         # verbose_name = 'Xaridor'
 

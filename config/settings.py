@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'customer.apps.CustomerConfig',
-    'import_export'
+    'import_export',
+    'adminsortable2',
     # 'baton.autodiscover',
 ]
 
