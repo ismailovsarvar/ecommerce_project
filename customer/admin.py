@@ -26,6 +26,7 @@ class CustomerModelAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 
 @admin.register(User)
-class UserModelAdmin(admin.ModelAdmin):
+class UserModelAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ['email', 'username', 'birth_of_date', 'is_superuser']
     form = UserModelForm
+    ordering = ('order',)

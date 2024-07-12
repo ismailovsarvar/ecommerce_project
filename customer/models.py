@@ -39,11 +39,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     # USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
+
+    class Meta:
+        ordering = ('order',)
 
     def __str__(self):
         return self.email
