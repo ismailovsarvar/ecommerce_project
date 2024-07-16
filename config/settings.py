@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+
 import environ
 
 env = environ.Env(
@@ -23,7 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -39,7 +39,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # 'baton',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,7 +49,6 @@ INSTALLED_APPS = [
     'customer.apps.CustomerConfig',
     'import_export',
     'adminsortable2',
-    # 'baton.autodiscover',
 ]
 
 MIDDLEWARE = [
@@ -94,7 +92,7 @@ DATABASES = {
         'PASSWORD': env('PASSWORD'),
         'HOST': env('HOST'),
         'PORT': env('PORT'),
-}
+    }
 }
 
 # Password validation
@@ -137,6 +135,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# SENDING EMAIL
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'sarvar7084295@gmail.com'
+EMAIL_HOST_PASSWORD = 'svgb tcxj ukuu udiv'
+
+# END SENDING EMAIL
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -145,76 +154,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'customer.User'
 
 # AUTH_USER_MODEL = 'customer.CustomUser'
-
-# BATON QO'SHILDI
-
-# from baton.ai import AIModels
-
-# BATON = {
-#     'SITE_HEADER': 'Baton',
-#     'SITE_TITLE': 'Baton',
-#     'INDEX_TITLE': 'Site administration',
-#     'SUPPORT_HREF': 'https://github.com/otto-torino/django-baton/issues',
-#     'COPYRIGHT': 'copyright © 2017 <a href="https://www.otto.to.it">Otto srl</a>',  # noqa
-#     'POWERED_BY': '<a href="https://www.otto.to.it">Otto srl</a>',
-#     'CONFIRM_UNSAVED_CHANGES': True,
-#     'SHOW_MULTIPART_UPLOADING': True,
-#     'ENABLE_IMAGES_PREVIEW': True,
-#     'CHANGELIST_FILTERS_IN_MODAL': True,
-#     'CHANGELIST_FILTERS_ALWAYS_OPEN': False,
-#     'CHANGELIST_FILTERS_FORM': True,
-#     'CHANGEFORM_FIXED_SUBMIT_ROW': True,
-#     'COLLAPSABLE_USER_AREA': False,
-#     'MENU_ALWAYS_COLLAPSED': False,
-#     'MENU_TITLE': 'Menu',
-#     'MESSAGES_TOASTS': False,
-#     'GRAVATAR_DEFAULT_IMG': 'retro',
-#     'GRAVATAR_ENABLED': True,
-#     'FORCE_THEME': None,
-#     'LOGIN_SPLASH': '/static/core/img/login-splash.png',
-#     'SEARCH_FIELD': {
-#         'label': 'Search contents...',
-#         'url': '/search/',
-#     },
-#     'BATON_CLIENT_ID': 'xxxxxxxxxxxxxxxxxxxx',
-#     'BATON_CLIENT_SECRET': 'xxxxxxxxxxxxxxxxxx',
-#     'AI': {
-#         'MODELS': "myapp.foo.bar",  # alternative to the below for lines, a function which returns the models dictionary
-#         'IMAGES_MODEL': AIModels.BATON_DALL_E_3,
-#         'SUMMARIZATIONS_MODEL': AIModels.BATON_GPT_4O,
-#         'TRANSLATIONS_MODEL': AIModels.BATON_GPT_4O,
-#         'ENABLE_TRANSLATIONS': True,
-#         'ENABLE_CORRECTIONS': True,
-#         'CORRECTION_SELECTORS': ["textarea",
-#                                  "input[type=text]:not(.vDateField):not([name=username]):not([name*=subject_location])"],
-#         'CORRECTIONS_MODEL': AIModels.BATON_GPT_3_5_TURBO,
-#     },
-#     'MENU': (
-#         {'type': 'title', 'label': 'main', 'apps': ('auth',)},
-#         {
-#             'type': 'app',
-#             'name': 'auth',
-#             'label': 'Authentication',
-#             'icon': 'fa fa-lock',
-#             'default_open': True,
-#             'models': (
-#                 {
-#                     'name': 'user',
-#                     'label': 'Users'
-#                 },
-#                 {
-#                     'name': 'group',
-#                     'label': 'Groups'
-#                 },
-#             )
-#         },
-#         {'type': 'title', 'label': 'Contents', 'apps': ('flatpages',)},
-#         {'type': 'model', 'label': 'Pages', 'name': 'flatpage', 'app': 'flatpages'},
-#         {'type': 'free', 'label': 'Custom Link', 'url': 'http://www.google.it',
-#          'perms': ('flatpages.add_flatpage', 'auth.change_user')},
-#         {'type': 'free', 'label': 'My parent voice', 'children': [
-#             {'type': 'model', 'label': 'A Model', 'name': 'mymodelname', 'app': 'myapp', 'icon': 'fa fa-gavel'},
-#             {'type': 'free', 'label': 'Another custom link', 'url': 'http://www.google.it'},
-#         ]},
-#     )
-# }

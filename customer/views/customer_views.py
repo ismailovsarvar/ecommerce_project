@@ -3,7 +3,6 @@ import json
 from io import BytesIO
 
 import openpyxl
-from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponse
@@ -82,13 +81,10 @@ class EditCustomerTemplateView(TemplateView):
 
 
 class DeleteCustomerTemplateView(TemplateView):
-    template_name = 'customer/customer-list.html'
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         customer = Customer.objects.get(id=self.kwargs['pk'])
-        if customer:
-            customer.delete()
-            messages.add_message(request, messages.SUCCESS, 'Customer deleted successfully.')
+        customer.delete()
         return redirect('customers')
 
 
@@ -131,6 +127,9 @@ class ExportDataTemplateView(TemplateView):
             response.content = 'Bad request'
 
         return response
+
+
+"""END TEMPLATE VIEW"""
 
 # def customers(request):
 #     page = request.GET.get('page', )
@@ -211,7 +210,7 @@ class ExportDataTemplateView(TemplateView):
 #         writer = csv.writer(response)
 #         writer.writerow(['ID', 'Full Name', 'Email', 'Phone Number', 'Address'])
 #         for customer in Customer.objects.all():
-#             writer.writerow([customer.id, customer.full_name, customer.email, customer.phone_number, customer.address])
+#         writer.writerow([customer.id, customer.full_name, customer.email, customer.phone_number, customer.address])
 #
 #     elif format == 'json':
 #         response = HttpResponse(content_type='application/json')

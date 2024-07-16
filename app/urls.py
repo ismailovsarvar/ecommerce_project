@@ -5,7 +5,8 @@ from app.views import (
     ProductDetailTemplateView,
     AddProductTemplateView,
     EditProductTemplateView,
-    DeleteProductView
+    DeleteProductView,
+    EmailFormView
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('add-product/', AddProductTemplateView.as_view(), name='add_product'),
     path('update-product/<int:pk>', EditProductTemplateView.as_view(), name='update_product'),
     path('delete-product/<int:pk>', DeleteProductView.as_view(), name='product_delete'),
+    path('send-email/', EmailFormView.as_view(), name='send_email'),
 ]

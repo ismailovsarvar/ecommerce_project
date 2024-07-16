@@ -1,9 +1,11 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.http import HttpResponse
 from django.views.generic import TemplateView
+from django.core.mail import send_mail
 
-from app.forms import ProductModelForm
+from app.forms import ProductModelForm, EmailForm
 from app.models import Product
 
 # Create your views here.
@@ -219,4 +221,33 @@ class AddProductTemplateView(TemplateView):
         if form.is_valid():
             form.save()
             return redirect('index')
+        return self.render_to_response(self.get_context_data(form=form))
+
+
+# SENDING EMAIL TEMPLATE VIEW
+
+
+class EmailFormView(TemplateView):
+    template_name = 'product/send_email.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = EmailForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            from_email= form.cleaned_data['from_email']
+            to_email= form.cleaned_data['to_email']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            send_mail(
+                subject,
+                message,
+                from_email,
+                [to_email],
+                fail_silently=False,
+            )
+            return HttpResponse('Email sent successfully')
         return self.render_to_response(self.get_context_data(form=form))
