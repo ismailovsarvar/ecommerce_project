@@ -40,24 +40,49 @@ class LoginForm(forms.Form):
 
 
 class RegisterModelForm(forms.ModelForm):
-    confirm_password = forms.CharField(max_length=255)
+    confirm_password = forms.CharField(max_length=255, widget=forms.PasswordInput)
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
 
     def clean_email(self):
-        email = self.data.get('email').lower()
+        email = self.cleaned_data.get('email').lower()
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError(f'The {email} email is already registered')
         return email
 
-    def clean_password(self):
-        password = self.data.get('password')
-        confirm_password = self.data.get('confirm_password')
-        if password != confirm_password:
-            raise forms.ValidationError('Passwords did not match')
-        return password
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+        if password and confirm_password and password != confirm_password:
+            self.add_error('confirm_password', 'Passwords did not match')
+        return cleaned_data
+
+
+# class RegisterModelForm(forms.ModelForm):
+#     confirm_password = forms.CharField(max_length=255)
+#
+#     class Meta:
+#         model = User
+#         fields = ('username', 'email', 'password')
+#
+#     def clean_email(self):
+#         email = self.data.get('email').lower()
+#         if User.objects.filter(email=email).exists():
+#             raise forms.ValidationError(f'The {email} email is already registered')
+#         return email
+#
+#     def clean_password(self):
+#         password = self.data.get('password')
+#         confirm_password = self.data.get('confirm_password')
+#         if password != confirm_password:
+#             raise forms.ValidationError('Passwords did not match')
+#         return password
 
 
 class UserModelForm(forms.ModelForm):
